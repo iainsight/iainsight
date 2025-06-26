@@ -131,7 +131,7 @@
 
     <!-- Header -->
     <!-- Header Component -->
-<header class="fixed top-0 left-0 right-0 z-50 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 transition-all duration-300">
+<header class="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 transition-all duration-300">
     <div class="container mx-auto px-4">
         <div class="flex items-center justify-between h-16">
             <!-- Logo -->
@@ -183,24 +183,24 @@
     <!-- Mobile Menu Overlay -->
     <div id="mobileMenuOverlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 lg:hidden z-40"></div>
     <!-- Mobile Menu -->
-    <div id="mobileMenu" class="fixed top-0 left-0 w-80 h-full bg-white dark:bg-gray-900 shadow-2xl transform -translate-x-full transition-transform duration-300 lg:hidden z-50">
-        <div class="flex flex-col h-full">
+    <div id="mobileMenu" class="fixed top-0 left-0 w-80 h-full bg-gray-900 dark:bg-gray-900 shadow-2xl transform -translate-x-full transition-transform duration-300 lg:hidden z-50" style="background:#111827;">
+        <div class="flex flex-col h-full" style="background:#111827;">
             <!-- Mobile Menu Header -->
-            <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+            <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700" style="background:#111827;">
                 <div class="flex items-center space-x-2">
                     <div class="w-8 h-8 bg-gradient-to-br from-green-500 to-blue-600 rounded-lg flex items-center justify-center">
                         <span class="text-white font-bold text-sm">IA</span>
                     </div>
                     <span class="text-lg font-bold text-gray-900 dark:text-white">IA Insight</span>
                 </div>
-                <button id="mobileMenuClose" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-300">
+                <button id="mobileMenuClose" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-300" onclick="closeMobileMenu()">
                     <svg class="w-6 h-6 text-gray-700 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
                 </button>
             </div>
             <!-- Mobile Navigation -->
-            <nav class="flex-1 p-6">
+            <nav class="flex-1 p-6 dark:border-gray-700" style="background:#111827;">
                 <div class="space-y-4">
                     <a href="index.html" class="flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-green-50 dark:hover:bg-green-900/20 hover:text-green-600 dark:hover:text-green-400 rounded-lg transition-all duration-300 group"><svg class="w-5 h-5 mr-3 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg><span class="font-medium">Início</span></a>
                     <a href="about.html" class="flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-green-50 dark:hover:bg-green-900/20 hover:text-green-600 dark:hover:text-green-400 rounded-lg transition-all duration-300 group"><svg class="w-5 h-5 mr-3 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg><span class="font-medium">Sobre Nós</span></a>
@@ -211,7 +211,7 @@
                 </div>
             </nav>
             <!-- Mobile CTA -->
-            <div class="p-6 border-t border-gray-200 dark:border-gray-700">
+            <div class="p-6 border-t border-gray-200 dark:border-gray-700" style="background:#111827;">
                 <a href="contact.html" class="w-full flex items-center justify-center px-6 py-3 bg-gradient-to-r from-green-600 to-blue-600 text-white font-semibold rounded-lg hover:from-green-700 hover:to-blue-700 transform hover:scale-105 transition-all duration-300 shadow-lg">
                     <span>Solicitar Orçamento</span>
                     <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
@@ -618,16 +618,6 @@
         <span class="text-white text-xs font-bold">1</span>
     </div>
 </div>
-    <!-- Botão Voltar ao Topo -->
-    <button id="btn-topo" class="fixed bottom-40 right-6 z-50 opacity-30 hover:opacity-90 transition-opacity bg-gray-800 hover:bg-white hover:bg-opacity-20 text-white rounded-full p-1.5 shadow-lg flex flex-col items-center group" aria-label="Ir para o início da página" onclick="window.scrollTo({top:0,behavior:'smooth'})">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
-        </svg>
-        <svg class="w-5 h-5 -mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19l7-7 7 7" />
-        </svg>
-        <span class="absolute bottom-full right-0 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">Ir para o início da página</span>
-    </button>
     <!-- Scripts -->
     <script src="../assets/js/script.js"></script>
     <script src="../assets/js/performance.js"></script>

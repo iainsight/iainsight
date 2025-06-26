@@ -233,14 +233,13 @@ function setupSmoothScrolling() {
 
 function setupFormValidation() {
     const forms = document.querySelectorAll('form');
-    
     forms.forEach(form => {
         form.addEventListener('submit', (e) => {
             if (!validateForm(form)) {
                 e.preventDefault();
             }
+            // Não impedir o envio se for válido, e não usar fetch/AJAX
         });
-        
         // Validação em tempo real
         const inputs = form.querySelectorAll('input, textarea, select');
         inputs.forEach(input => {
