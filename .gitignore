@@ -1,0 +1,14 @@
+# Ignorar dependências Node
+node_modules/
+
+# Ignorar pastas de build
+dist/
+
+# Ignorar arquivos temporários do sistema e editor
+.DS_Store
+Thumbs.db
+
+# Ignorar logs do npm
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
