@@ -15,7 +15,6 @@ env:
   NODE_VERSION: '18'
 
 jobs:
-  # Test and Build Job
   test-and-build:
     runs-on: ubuntu-latest
     
@@ -30,20 +29,16 @@ jobs:
         cache: 'npm'
         
     - name: Install dependencies
-      run: |
-        npm ci
+      run: npm ci
         
     - name: Run tests
-      run: |
-        npm test
+      run: npm test
         
     - name: Run linting
-      run: |
-        npm run lint
+      run: npm run lint
         
     - name: Build project
-      run: |
-        npm run build
+      run: npm run build
         
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
@@ -52,7 +47,6 @@ jobs:
         path: dist/
         retention-days: 1
 
-  # Deploy to Staging
   deploy-staging:
     needs: test-and-build
     runs-on: ubuntu-latest
@@ -74,153 +68,8 @@ jobs:
         key: ${{ secrets.STAGING_SSH_KEY }}
         port: ${{ secrets.STAGING_PORT }}
         script: |
-          # Create backup
           sudo cp -r /var/www/staging.iainsight.com.br /var/www/staging.iainsight.com.br.backup.$(date +%Y%m%d_%H%M%S)
-          
-          # Stop nginx temporarily
           sudo systemctl stop nginx
-          
-          # Deploy new files
           sudo rm -rf /var/www/staging.iainsight.com.br/*
           sudo cp -r dist/* /var/www/staging.iainsight.com.br/
-          
-          # Set permissions
-          sudo chown -R www-data:www-data /var/www/staging.iainsight.com.br
-          sudo chmod -R 755 /var/www/staging.iainsight.com.br
-          
-          # Start nginx
-          sudo systemctl start nginx
-          
-          # Health check
-          sleep 10
-          curl -f https://staging.iainsight.com.br || exit 1
-          
-    - name: Clear CDN cache (Cloudflare)
-      if: secrets.CLOUDFLARE_ZONE_ID != ''
-      run: |
-        curl -X POST "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ZONE_ID }}/purge_cache" \
-          -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
-          -H "Content-Type: application/json" \
-          --data '{"purge_everything":true}'
-          
-    - name: Notify Slack
-      if: secrets.SLACK_WEBHOOK_URL != ''
-      run: |
-        curl -X POST -H 'Content-type: application/json' \
-          --data '{"text":"🚀 IA Insight Portal deployed to staging successfully!"}' \
-          ${{ secrets.SLACK_WEBHOOK_URL }}
-
-  # Deploy to Production
-  deploy-production:
-    needs: test-and-build
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    environment: production
-    
-    steps:
-    - name: Download build artifacts
-      uses: actions/download-artifact@v4
-      with:
-        name: build-files
-        path: dist/
-        
-    - name: Deploy to production server
-      uses: appleboy/ssh-action@v1.0.3
-      with:
-        host: ${{ secrets.PRODUCTION_HOST }}
-        username: ${{ secrets.PRODUCTION_USER }}
-        key: ${{ secrets.PRODUCTION_SSH_KEY }}
-        port: ${{ secrets.PRODUCTION_PORT }}
-        script: |
-          # Create backup
-          sudo cp -r /var/www/iainsight.com.br /var/www/iainsight.com.br.backup.$(date +%Y%m%d_%H%M%S)
-          
-          # Stop nginx temporarily
-          sudo systemctl stop nginx
-          
-          # Deploy new files
-          sudo rm -rf /var/www/iainsight.com.br/*
-          sudo cp -r dist/* /var/www/iainsight.com.br/
-          
-          # Set permissions
-          sudo chown -R www-data:www-data /var/www/iainsight.com.br
-          sudo chmod -R 755 /var/www/iainsight.com.br
-          
-          # Start nginx
-          sudo systemctl start nginx
-          
-          # Health check
-          sleep 10
-          curl -f https://iainsight.com.br || exit 1
-          
-    - name: Clear CDN cache (Cloudflare)
-      if: secrets.CLOUDFLARE_ZONE_ID != ''
-      run: |
-        curl -X POST "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ZONE_ID }}/purge_cache" \
-          -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
-          -H "Content-Type: application/json" \
-          --data '{"purge_everything":true}'
-          
-    - name: Notify Slack
-      if: secrets.SLACK_WEBHOOK_URL != ''
-      run: |
-        curl -X POST -H 'Content-type: application/json' \
-          --data '{"text":"🎉 IA Insight Portal deployed to production successfully!"}' \
-          ${{ secrets.SLACK_WEBHOOK_URL }}
-
-  # Performance Testing
-  performance-test:
-    needs: [deploy-staging, deploy-production]
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging'
-    
-    steps:
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        
-    - name: Install Lighthouse CI
-      run: npm install -g @lhci/cli@0.12.x
-      
-    - name: Run Lighthouse CI
-      run: |
-        lhci autorun
-      env:
-        LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
-
-  # Security Scan
-  security-scan:
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging'
-    
-    steps:
-    - name: Run OWASP ZAP Scan
-      uses: zaproxy/action-full-scan@v0.8.0
-      with:
-        target: 'https://iainsight.com.br'
-        rules_file_name: '.zap/rules.tsv'
-        cmd_options: '-a'
-        
-    - name: Upload ZAP results
-      uses: actions/upload-artifact@v4
-      with:
-        name: zap-results
-        path: zap-report.html
-        retention-days: 30
-
-  # Backup Verification
-  backup-verification:
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    
-    steps:
-    - name: Verify backup creation
-      run: |
-        echo "Verifying backup was created successfully..."
-        # Add backup verification logic here
-        
-    - name: Test backup restore
-      run: |
-        echo "Testing backup restore process..."
-        # Add backup restore test logic here 
+          sudo chown -R www-data:www-data /var/www/sta

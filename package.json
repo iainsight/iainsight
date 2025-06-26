@@ -6,21 +6,27 @@
   "scripts": {
     "dev": "serve . -p 3000",
     "build": "npm run build:clean && npm run build:copy && npm run build:optimize",
-    "build:clean": "rm -rf dist && mkdir -p dist",
-    "build:copy": "cp -r assets dist/ && cp -r components dist/ && cp -r pages dist/ && cp *.html dist/ && cp robots.txt dist/ && cp sitemap.xml dist/ && cp sw.js dist/ && cp assets/site.webmanifest dist/",
+    "build:clean": "rimraf dist && mkdir dist",
+    "build:copy": "npm run copy:assets && npm run copy:components && npm run copy:pages && npm run copy:html && npm run copy:rootfiles && npm run copy:manifest",
+    "copy:assets": "copyfiles -u 1 assets/**/* dist/",
+    "copy:components": "copyfiles -u 1 components/**/* dist/",
+    "copy:pages": "copyfiles -u 1 pages/**/* dist/",
+    "copy:html": "copyfiles *.html dist/",
+    "copy:rootfiles": "copyfiles robots.txt sitemap.xml sw.js dist/",
+    "copy:manifest": "copyfiles assets/site.webmanifest dist/",
     "build:optimize": "npm run optimize:paths && npm run optimize:images && npm run create:nojekyll",
-    "optimize:paths": "find dist -name '*.html' -exec sed -i 's|href=\"/|href=\"./|g' {} \\; && find dist -name '*.html' -exec sed -i 's|src=\"/|src=\"./|g' {} \\;",
-    "optimize:images": "echo 'Image optimization would run here'",
-    "create:nojekyll": "touch dist/.nojekyll",
-    "build:github-pages": "npm run build && echo 'CNAME' > dist/CNAME && echo 'iainsight.com.br' >> dist/CNAME",
+    "optimize:paths": "npx replace-in-file \"href=\\\"/\" \"href=\\\"./\" \"dist/**/*.html\" && npx replace-in-file \"src=\\\"/\" \"src=\\\"./\" \"dist/**/*.html\"",
+    "optimize:images": "echo Image optimization would run here",
+    "create:nojekyll": "echo > dist/.nojekyll",
+    "build:github-pages": "npm run build && echo iainsight.com.br > dist/CNAME",
     "deploy:github-pages": "npm run build:github-pages && gh-pages -d dist",
-    "test": "echo 'Tests would run here'",
-    "lint": "echo 'Linting would run here'",
-    "lint:fix": "echo 'Lint fixing would run here'",
+    "test": "echo Tests would run here",
+    "lint": "echo Linting would run here",
+    "lint:fix": "echo Lint fixing would run here",
     "serve": "serve dist -p 8000",
     "analyze": "npm run build && npx lighthouse dist/index.html --output=html --output-path=./lighthouse-report.html",
     "preview": "npm run build && serve dist -p 3000",
-    "clean": "rm -rf dist node_modules package-lock.json",
+    "clean": "rimraf dist node_modules package-lock.json",
     "install:gh-pages": "npm install gh-pages --save-dev"
   },
   "keywords": [
@@ -43,9 +49,13 @@
     "url": "https://github.com/seu-usuario/ia-insight-portal/issues"
   },
   "devDependencies": {
+    "copyfiles": "^2.4.1",
     "gh-pages": "^6.1.0",
-    "serve": "^14.2.1",
-    "lighthouse": "^11.6.0"
+    "lighthouse": "^11.6.0",
+    "replace-in-file": "^8.3.0",
+    "replace-in-files": "^3.0.0",
+    "rimraf": "^6.0.1",
+    "serve": "^14.2.1"
   },
   "engines": {
     "node": ">=18.0.0",
@@ -56,4 +66,4 @@
     "last 2 versions",
     "not dead"
   ]
-} 
+}
