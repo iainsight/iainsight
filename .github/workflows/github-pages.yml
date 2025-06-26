@@ -1,0 +1,149 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+      - gh-pages
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  # Build job
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: |
+          npm ci
+          
+      - name: Run tests
+        run: |
+          npm test
+          
+      - name: Run linting
+        run: |
+          npm run lint
+          
+      - name: Build for GitHub Pages
+        run: |
+          # Create dist directory
+          mkdir -p dist
+          
+          # Copy all files to dist
+          cp -r assets/ dist/
+          cp -r components/ dist/
+          cp -r pages/ dist/
+          cp *.html dist/
+          cp robots.txt dist/
+          cp sitemap.xml dist/
+          cp sw.js dist/
+          cp assets/site.webmanifest dist/
+          
+          # Optimize for GitHub Pages
+          echo "Optimizing for GitHub Pages..."
+          
+          # Update paths for GitHub Pages (if needed)
+          find dist -name "*.html" -exec sed -i 's|href="/|href="./|g' {} \;
+          find dist -name "*.html" -exec sed -i 's|src="/|src="./|g' {} \;
+          
+          # Create .nojekyll file for GitHub Pages
+          touch dist/.nojekyll
+          
+          # Create CNAME file if domain is configured
+          if [ -n "${{ secrets.CUSTOM_DOMAIN }}" ]; then
+            echo "${{ secrets.CUSTOM_DOMAIN }}" > dist/CNAME
+          fi
+          
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/
+
+  # Deploy job
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        
+      - name: Notify deployment
+        run: |
+          echo "🚀 IA Insight Portal deployed to GitHub Pages!"
+          echo "URL: ${{ steps.deployment.outputs.page_url }}"
+          
+      - name: Run Lighthouse CI
+        if: github.ref == 'refs/heads/main'
+        run: |
+          npm install -g @lhci/cli@0.12.x
+          lhci autorun
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+
+  # Preview job for pull requests
+  preview:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: pages-artifact
+          path: dist/
+          
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+        
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/
+          
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        
+      - name: Comment PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `🚀 **Preview disponível!**
+              
+              Suas mudanças foram deployadas para preview:
+              **URL**: ${{ steps.deployment.outputs.page_url }}
+              
+              ⚡ **Performance**: [Lighthouse Report](${{ steps.deployment.outputs.page_url }}/lighthouse-report.html)
+              
+              ---
+              *Preview gerado automaticamente pelo GitHub Actions*`
+            }) 

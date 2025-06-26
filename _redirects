@@ -1,0 +1,13 @@
+# IA Insight Portal - Redirects for GitHub Pages
+
+# Redirect www to non-www (if using custom domain)
+# https://www.iainsight.com.br/* https://iainsight.com.br/:splat 301!
+
+# Redirect old URLs to new ones (if any)
+# /old-page /new-page 301
+
+# Redirect to HTTPS (handled by GitHub Pages automatically)
+# http://iainsight.com.br/* https://iainsight.com.br/:splat 301!
+
+# SPA fallback (if implementing SPA routing in the future)
+# /* /index.html 200 
