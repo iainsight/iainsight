@@ -333,8 +333,8 @@
     <!-- Home Float Component -->
     <div class="fixed top-[85px] right-6 z-50">
         <a href="index.html" class="group relative" aria-label="Voltar para o início">
-            <div class="w-14 h-14 bg-blue-600 hover:bg-blue-700 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center transform hover:scale-110">
-                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="w-12 h-12 sm:w-14 sm:h-14 bg-blue-600 hover:bg-blue-700 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center transform hover:scale-110 p-3">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                 </svg>
             </div>
@@ -357,6 +357,32 @@
     <script src="../assets/js/performance.js"></script>
     <script src="../assets/js/accessibility.js"></script>
     <script src="../assets/js/analytics.js"></script>
+
+    <!-- Botão de voltar ao topo (duas setas pretas, centralizado no rodapé, visível apenas em mobile) -->
+    <button id="btn-topo-mobile" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex sm:hidden flex-col items-center justify-center p-0 m-0 bg-transparent border-none shadow-none" aria-label="Voltar ao topo" style="background:transparent;box-shadow:none;border:none;" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+        <svg class="w-7 h-7 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-bottom:-16px;">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+        </svg>
+        <svg class="w-7 h-7 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19l7-7 7 7" />
+        </svg>
+    </button>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var btnTopo = document.getElementById('btn-topo-mobile');
+      if (btnTopo) {
+        btnTopo.style.display = 'none';
+        window.addEventListener('scroll', function() {
+          if (window.scrollY > 50) {
+            btnTopo.style.display = 'flex';
+          } else {
+            btnTopo.style.display = 'none';
+          }
+        });
+      }
+    });
+    </script>
 </body>
 </html>
 

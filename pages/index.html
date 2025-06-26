@@ -623,6 +623,29 @@
     <script src="../assets/js/performance.js"></script>
     <script src="../assets/js/accessibility.js"></script>
     <script src="../assets/js/analytics.js"></script>
+    <button id="btn-topo-mobile" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex sm:hidden flex-col items-center justify-center p-0 m-0 bg-transparent border-none shadow-none" aria-label="Voltar ao topo" style="background:transparent;box-shadow:none;border:none;" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+        <svg class="w-7 h-7 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-bottom:-16px;">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+        </svg>
+        <svg class="w-7 h-7 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19l7-7 7 7" />
+        </svg>
+    </button>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var btnTopo = document.getElementById('btn-topo-mobile');
+      if (btnTopo) {
+        btnTopo.style.display = 'none';
+        window.addEventListener('scroll', function() {
+          if (window.scrollY > 50) {
+            btnTopo.style.display = 'flex';
+          } else {
+            btnTopo.style.display = 'none';
+          }
+        });
+      }
+    });
+    </script>
 </body>
 </html>
 

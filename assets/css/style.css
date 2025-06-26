@@ -1130,3 +1130,24 @@ a:hover {
 .dark .text-light-dark {
   color: #fff !important;    /* branco no modo escuro */
 }
+
+@media (max-width: 768px) {
+  .icon-float, #darkModeToggle, .fixed.top-\[85px\].right-6.z-50, .fixed.top-\[77px\].right-6.z-50, .fixed.top-6.right-6.z-50 {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    min-height: 36px !important;
+    max-width: 36px !important;
+    max-height: 36px !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  .icon-float svg, #darkModeToggle svg, .fixed.top-\[85px\].right-6.z-50 svg, .fixed.top-\[77px\].right-6.z-50 svg, .fixed.top-6.right-6.z-50 svg {
+    width: 18px !important;
+    height: 18px !important;
+    margin: 0 auto !important;
+    display: block !important;
+  }
+}
